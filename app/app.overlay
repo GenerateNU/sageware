@@ -1,0 +1,26 @@
+/ {
+
+    aliases {
+        step   = &step_pin;
+        dir    = &dir_pin;
+        enable = &enable_pin;
+    };
+
+    /* Parent grouping node for the stepper control signals */
+    stepper_motor: stepper_motor {
+        compatible = "gpio-leds";
+
+        step_pin: step_pin {
+            gpios = <&gpiod 7 GPIO_ACTIVE_HIGH>;
+        };
+
+        dir_pin: dir_pin {
+            gpios = <&gpiod 6 GPIO_ACTIVE_HIGH>;
+        };
+
+        /* ENABLE pin: PA2 */
+        enable_pin: enable_pin {
+            gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;
+        };
+    };
+};

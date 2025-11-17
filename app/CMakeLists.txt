@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
 set(ZEPHYR_TOOLCHAIN_VARIANT zephyr)
-set(CMAKE_OBJCOPY $ENV{HOME}/zephyr-sdk-0.17.2/xtensa-espressif_esp32_zephyr-elf/bin/xtensa-espressif_esp32_zephyr-elf-objcopy)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(app)

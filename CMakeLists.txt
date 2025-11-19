@@ -1,1 +1,1 @@
-project(firmware-template)
+## project(firmware-template)

@@ -1,0 +1,1 @@
+// ADC setup and current sensing logic (including the 2.4A threshold detection for the cutting motor)

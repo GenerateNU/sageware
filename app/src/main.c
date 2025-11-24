@@ -4,15 +4,12 @@
 #include <zephyr/drivers/gpio.h>
 
 #include "motor.h"
+// #include "heating_motor.h"   // Will have different gear ratio
+// #include "molding_motor.h"   // Will have different gear ratio  
+// #include "cutting_motor.h"   // Will have different gear ratio
 
 #define LED0_NODE DT_ALIAS(led0)
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
-
-// Motor + gearbox constants
-#define MOTOR_STEPS_PER_REV 200          // 1.8° stepper → 200 full steps/rev
-#define GEAR_RATIO          20           // 20:1 planetary gearbox
-#define STEPS_PER_REV       MOTOR_STEPS_PER_REV
-#define TOTAL_STEPS         (STEPS_PER_REV * GEAR_RATIO)   // 200 * 20 = 4000
 
 int main(void)
 {
@@ -24,10 +21,52 @@ int main(void)
 
     printk("Stepper Motor Ready\n");
 
+    // Example 1: Start motor clockwise
+    motor_run(true, CLOCKWISE, 800);     // Turn ON, clockwise, 800us delay
+    
+    k_msleep(3000);                      // Run for 3 seconds
+    
+    // Example 2: Change speed while running (keep same direction)
+    motor_run(true, CLOCKWISE, 500);     // Still ON, CW, but faster
+    
+    k_msleep(2000);                      // Run for 2 more seconds
+    
+    // Example 3: Change direction while running
+    motor_run(true, COUNTER_CLOCKWISE, 500);  // Still ON, but now CCW
+    
+    k_msleep(2000);
+    
+    // Example 4: Stop the motor
+    motor_run(false, CLOCKWISE, 0);      // Turn OFF (direction/delay don't matter)
+    
+    k_msleep(1000);                      // Pause
+    
+    // Example 5: Use blocking rotation for precise movement
+    rotateSteps(TOTAL_STEPS, CLOCKWISE, 1000);  // Rotate exactly 1 full revolution
+    
+    k_msleep(500);
+    
+    // Example 6: Restart continuous operation
+    motor_run(true, COUNTER_CLOCKWISE, 1000);
+    
+    k_msleep(3000);
+    
+    motor_run(false, CLOCKWISE, 0);      // Turn OFF
+    
+    // Main loop for your bead project
     while (1) {
         gpio_pin_toggle_dt(&led0);
-        motor_set_dir(true);
-        rotateSteps(TOTAL_STEPS, 800);
-        k_msleep(500);
+        k_msleep(1000);
+        
+        // Your bead-making workflow:
+        // 1. Wait for user to select bead count on LCD
+        // 2. Wait for heaters to warm up
+        // 3. Wait for start button press
+        // 4. Start heating motor: motor_run(true, 800);
+        // 5. Start molding motor: molding_motor_run(true, 800);
+        // 6. Wait for photoelectric sensor
+        // 7. After 3 seconds, stop motors for cutting
+        // 8. Do cutting with current sensing
+        // 9. Restart motors and repeat until bead count reached
     }
 }

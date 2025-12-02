@@ -24,3 +24,9 @@
         };
     };
 };
+
+&adc3 {
+    status = "okay";
+    pinctrl-0 = <&adc3_inp5_pf3>;
+    pinctrl-names = "default";
+};

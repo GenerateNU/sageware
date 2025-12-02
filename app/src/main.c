@@ -2,9 +2,14 @@
 #include <zephyr/kernel.h>
 // zephyr/device.h is included eventually through kernel.h
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(adc_sense, LOG_LEVEL_INF);   // register your module
+
 
 #include "motor.h"
 #include "screen.h"
+#include "adc.h"
 // #include "heating_motor.h"   // Will have different gear ratio
 // #include "molding_motor.h"   // Will have different gear ratio  
 // #include "cutting_motor.h"   // Will have different gear ratio
@@ -69,5 +74,18 @@ int main(void)
         // 7. After 3 seconds, stop motors for cutting
         // 8. Do cutting with current sensing
         // 9. Restart motors and repeat until bead count reached
+       CurrentSense_Init();
+
+    while (1) {
+        float current = CurrentSense_ReadCurrent();
+        bool overcurrent = CurrentSense_IsOvercurrent();
+
+        LOG_INF("Current: %.2f A, Overcurrent: %s", current,
+                overcurrent ? "YES" : "NO");
+
+        k_msleep(500);
+
+    
+    }
     }
 }

@@ -13,7 +13,7 @@
 #define CURRENT_SENSE_CHANNEL       5                   // PF3 = ADC3_INP5
 #define ADC_RESOLUTION              16                  // 16-bit ADC
 #define ADC_REFERENCE_VOLTAGE       3.3f                // VDDA
-#define CURRENT_SENSE_GAIN          1.5f                // V per Amp
+#define CURRENT_SENSE_GAIN          2.0f                // V per Amp
 #define MOTOR_OVERCURRENT_LIMIT_A   2.4f                // Motor threshold
 
 /* ------------------------------------------------------------

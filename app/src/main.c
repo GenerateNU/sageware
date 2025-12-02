@@ -4,7 +4,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 
-LOG_MODULE_REGISTER(adc_sense, LOG_LEVEL_INF);   // register your module
+LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);   // register your module
 
 
 #include "motor.h"
@@ -19,6 +19,11 @@ static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
 int main(void)
 {
+
+     printk("Hello Zephyr!");
+    while (1) {
+        k_msleep(1000);
+    }
     gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 
     if (motor_init() != 0) {
@@ -75,7 +80,6 @@ int main(void)
         // 8. Do cutting with current sensing
         // 9. Restart motors and repeat until bead count reached
        CurrentSense_Init();
-
     while (1) {
         float current = CurrentSense_ReadCurrent();
         bool overcurrent = CurrentSense_IsOvercurrent();

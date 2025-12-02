@@ -8,7 +8,9 @@
 #include "adc.h"
 #include <zephyr/logging/log.h>
 
-LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
+
+
+LOG_MODULE_REGISTER(adc_sense, LOG_LEVEL_INF);
 
 /* ADC device and buffer */
 static const struct device *adc_dev;
@@ -21,8 +23,12 @@ static int16_t adc_buf;
 void CurrentSense_Init(void)
 {
     adc_dev = DEVICE_DT_GET(CURRENT_SENSE_ADC_NODE);
+
+    printk("ADC device: %p", adc_dev);
+
     if (!device_is_ready(adc_dev)) {
         LOG_ERR("ADC device not ready");
+    
         return;
     }
 
@@ -44,6 +50,8 @@ void CurrentSense_Init(void)
     seq.buffer      = &adc_buf;
     seq.buffer_size = sizeof(adc_buf);
     seq.resolution  = ADC_RESOLUTION;
+
+    LOG_INF("ADC sequence channel mask: 0x%x", seq.channels);
 }
 
 /* ------------------------------------------------------------

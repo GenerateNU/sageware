@@ -43,7 +43,7 @@ int buttons_init(void)
             return -1;
         }
 
-        ret = gpio_pin_configure_dt(&button_specs[i], GPIO_INPUT | GPIO_PULL_UP);
+        ret = gpio_pin_configure_dt(&button_specs[i], GPIO_INPUT | GPIO_PULL_DOWN);
         if (ret < 0) {
             printk("Failed to configure button %d GPIO\n", i);
             return ret;
@@ -72,7 +72,7 @@ void buttons_poll(void)
         button_state_t *state = &button_states[i];
 
         /* Read raw button state (active low with pull-up) */
-        bool raw = !gpio_pin_get_dt(&button_specs[i]);
+        bool raw = gpio_pin_get_dt(&button_specs[i]);
 
         /* Debounce logic */
         if (raw != state->raw_state) {

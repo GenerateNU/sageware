@@ -1,0 +1,21 @@
+// Overlay file for adding all sensors/motor drivers/protocols/lcd screen
+//test white led below
+/*
+/ {
+    leds {
+        //compatible function defines what kind of device the node is
+        //In this case it is a zephyr binding meaning leds connected with GPIO pins
+        compatible = "gpio-leds";
+        //Label : node name
+        test_led: test_led {
+            //
+            gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+            label = "Test white LED";
+        };
+    };
+    aliases {
+        led0 = &test_led;
+        white-led = &test_led;
+    };
+};
+*/

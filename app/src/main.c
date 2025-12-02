@@ -4,6 +4,7 @@
 #include <zephyr/drivers/gpio.h>
 
 #include "motor.h"
+#include "buttons.h"
 // #include "heating_motor.h"   // Will have different gear ratio
 // #include "molding_motor.h"   // Will have different gear ratio  
 // #include "cutting_motor.h"   // Will have different gear ratio
@@ -11,10 +12,32 @@
 #define LED0_NODE DT_ALIAS(led0)
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
+/* Button event callback */
+void button_event_handler(button_id_t button, button_event_t event)
+{
+    const char *button_names[] = {"UP", "DOWN", "LEFT", "RIGHT", "SELECT"};
+    const char *event_names[] = {"NONE", "PRESSED", "RELEASED", "HELD"};
+    
+    printk("Button %s %s\n", button_names[button], event_names[event]);
+}
+
 int main(void)
 {
     gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 
+    /* Initialize buttons */
+    printk("Initializing buttons...\n");
+    if (buttons_init() != 0) {
+        printk("Button init failed!\n");
+        while (1) { gpio_pin_toggle_dt(&led0); k_msleep(100); }
+    }
+    
+    /* Register button callback */
+    buttons_set_callback(button_event_handler);
+    printk("Buttons ready - press any button!\n");
+
+    /* Comment out motor tests for now */
+    /*
     if (motor_init() != 0) {
         while (1) { gpio_pin_toggle_dt(&led0); k_msleep(100); }
     }
@@ -52,21 +75,14 @@ int main(void)
     k_msleep(3000);
     
     motor_run(false, CLOCKWISE, 0);      // Turn OFF
+    */
     
-    // Main loop for your bead project
+    // Main loop - poll buttons and blink LED
     while (1) {
-        gpio_pin_toggle_dt(&led0);
-        k_msleep(1000);
+        /* Poll buttons every 10ms for responsive input */
+        buttons_poll();
         
-        // Your bead-making workflow:
-        // 1. Wait for user to select bead count on LCD
-        // 2. Wait for heaters to warm up
-        // 3. Wait for start button press
-        // 4. Start heating motor: motor_run(true, 800);
-        // 5. Start molding motor: molding_motor_run(true, 800);
-        // 6. Wait for photoelectric sensor
-        // 7. After 3 seconds, stop motors for cutting
-        // 8. Do cutting with current sensing
-        // 9. Restart motors and repeat until bead count reached
+        gpio_pin_toggle_dt(&led0);
+        k_msleep(10);  /* 10ms polling interval */
     }
 }

@@ -19,10 +19,20 @@ static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
 int main(void)
 {
-
-     printk("Hello Zephyr!");
+ 
+     CurrentSense_Init();
     while (1) {
-        k_msleep(1000);
+        float current = CurrentSense_ReadCurrent();
+        bool overcurrent = CurrentSense_IsOvercurrent();
+
+        int current_mA = (int)(current * 1000.0f);
+
+LOG_INF("Current: %d mA, Overcurrent: %s",
+        current_mA,
+        overcurrent ? "YES" : "NO");
+
+        k_msleep(500);
+    
     }
     gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 
@@ -79,17 +89,6 @@ int main(void)
         // 7. After 3 seconds, stop motors for cutting
         // 8. Do cutting with current sensing
         // 9. Restart motors and repeat until bead count reached
-       CurrentSense_Init();
-    while (1) {
-        float current = CurrentSense_ReadCurrent();
-        bool overcurrent = CurrentSense_IsOvercurrent();
 
-        LOG_INF("Current: %.2f A, Overcurrent: %s", current,
-                overcurrent ? "YES" : "NO");
-
-        k_msleep(500);
-
-    
-    }
     }
 }

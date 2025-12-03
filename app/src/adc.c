@@ -17,11 +17,14 @@ static const struct device *adc_dev;
 static struct adc_sequence seq;
 static int16_t adc_buf;
 
+
+
 /* ------------------------------------------------------------
    Initialize ADC
    ------------------------------------------------------------ */
 void CurrentSense_Init(void)
 {
+    
     adc_dev = DEVICE_DT_GET(CURRENT_SENSE_ADC_NODE);
 
     printk("ADC device: %p", adc_dev);
@@ -31,6 +34,7 @@ void CurrentSense_Init(void)
     
         return;
     }
+
 
     /* Configure ADC channel */
     struct adc_channel_cfg ch_cfg = {
@@ -52,6 +56,11 @@ void CurrentSense_Init(void)
     seq.resolution  = ADC_RESOLUTION;
 
     LOG_INF("ADC sequence channel mask: 0x%x", seq.channels);
+
+        int32_t raw = adc_buf;
+int32_t mv = raw;
+adc_raw_to_millivolts(&ch_cfg, &seq, &mv);
+float voltage = mv / 1000.0f;
 }
 
 /* ------------------------------------------------------------

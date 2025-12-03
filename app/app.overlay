@@ -29,23 +29,23 @@
         compatible = "gpio-keys";
         
         button_up: button_up {
-            gpios = <&gpioe 11 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+            gpios = <&gpioe 11 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>;
         };
         
         button_down: button_down {
-            gpios = <&gpioe 12 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+            gpios = <&gpioe 12 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>;
         };
         
         button_left: button_left {
-            gpios = <&gpioe 13 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+            gpios = <&gpioe 13 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>;
         };
         
         button_right: button_right {
-            gpios = <&gpioe 14 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+            gpios = <&gpioe 14 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>;
         };
         
         button_select: button_select {
-            gpios = <&gpioe 15 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+            gpios = <&gpioe 15 (GPIO_PULL_DOWN | GPIO_ACTIVE_LOW)>;
         };
     };
 };

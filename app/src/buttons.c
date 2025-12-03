@@ -72,7 +72,7 @@ void buttons_poll(void)
         button_state_t *state = &button_states[i];
 
         /* Read raw button state (active low with pull-up) */
-        bool raw = gpio_pin_get_dt(&button_specs[i]);
+        bool raw = !gpio_pin_get_dt(&button_specs[i]);  // Remove the ! for active-high
 
         /* Debounce logic */
         if (raw != state->raw_state) {

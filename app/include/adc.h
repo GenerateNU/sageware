@@ -15,6 +15,7 @@
 #define ADC_REFERENCE_VOLTAGE       3.3f                // VDDA
 #define CURRENT_SENSE_GAIN          1.5f                // V per Amp
 #define MOTOR_OVERCURRENT_LIMIT_A   2.4f                // Motor threshold
+//const struct adc_dt_spec current_adc;
 
 /* ------------------------------------------------------------
    Public API
@@ -39,3 +40,4 @@ float CurrentSense_ReadCurrent(void);
 bool CurrentSense_IsOvercurrent(void);
 
 #endif // ADC_CURRENT_SENSE_H
+

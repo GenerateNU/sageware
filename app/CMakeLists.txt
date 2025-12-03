@@ -9,6 +9,7 @@ project(app)
 target_sources(app PRIVATE
   src/main.c
   src/motor.c
+  src/screen.c
 )
 
 target_include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

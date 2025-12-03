@@ -13,14 +13,24 @@ LOG_MODULE_REGISTER(adc_sense, LOG_LEVEL_INF);
 /* ADC device + sequence */
 static const struct device *adc_dev;
 static struct adc_dt_spec current_adc;
-static int16_t adc_buf;
+static uint16_t adc_buf;  // Changed to unsigned
 
 void CurrentSense_Init(void)
 {
     /* Get ADC device spec using device tree */
-    current_adc.dev = DEVICE_DT_GET(CURRENT_SENSE_ADC_NODE);
-    current_adc.channel_id = CURRENT_SENSE_CHANNEL;
-    current_adc.resolution = ADC_RESOLUTION;
+    current_adc = (struct adc_dt_spec) {
+        .dev = DEVICE_DT_GET(CURRENT_SENSE_ADC_NODE),
+        .channel_id = CURRENT_SENSE_CHANNEL,
+        .resolution = ADC_RESOLUTION,
+        .oversampling = 0,
+        .channel_cfg = {
+            .gain = ADC_GAIN_1,
+            .reference = ADC_REF_VDD_1,
+            .acquisition_time = ADC_ACQ_TIME_DEFAULT,
+            .differential = 0,
+        },
+        .vref_mv = 3300,  // 3.3V reference in millivolts
+    };
 
     if (!device_is_ready(current_adc.dev)) {
         LOG_ERR("ADC device not ready");
@@ -33,13 +43,13 @@ void CurrentSense_Init(void)
         return;
     }
 
-    LOG_INF("ADC device ready: %p, channel: %d", current_adc.dev, CURRENT_SENSE_CHANNEL);
+    LOG_INF("ADC device ready: %p, channel: %d, vref: %d mV", 
+            current_adc.dev, CURRENT_SENSE_CHANNEL, current_adc.vref_mv);
 }
 
  float CurrentSense_ReadCurrent(void)
  {
      int ret;
-     int32_t raw_mv;
      struct adc_sequence seq = {
          .channels = BIT(current_adc.channel_id),
          .buffer = &adc_buf,
@@ -53,9 +63,12 @@ void CurrentSense_Init(void)
          return 0.0f;
      }
 
-     /* Convert raw ADC to mV */
-     raw_mv = adc_raw_to_millivolts_dt(&current_adc, adc_buf);
-     float voltage = raw_mv / 1000.0f;
+     /* Manual conversion: raw value / max_value * reference_voltage */
+     uint32_t max_value = (1 << ADC_RESOLUTION) - 1;  // 65535 for 16-bit
+     float voltage = ((float)adc_buf / (float)max_value) * ADC_REFERENCE_VOLTAGE;
+
+     LOG_INF("ADC raw: %d, max: %u, voltage: %d mV", 
+             (int)adc_buf, max_value, (int)(voltage * 1000));
 
      /* Convert voltage to current */
      return voltage / CURRENT_SENSE_GAIN;

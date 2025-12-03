@@ -36,30 +36,31 @@ void CurrentSense_Init(void)
     LOG_INF("ADC device ready: %p, channel: %d", current_adc.dev, CURRENT_SENSE_CHANNEL);
 }
 
-float CurrentSense_ReadCurrent(void)
-{
-    int ret;
-    int32_t raw_mv;
-    struct adc_sequence seq = {
-        .channels = BIT(current_adc.channel_id),
-        .buffer = &adc_buf,
-        .buffer_size = sizeof(adc_buf),
-        .resolution = current_adc.resolution,
-    };
+ float CurrentSense_ReadCurrent(void)
+ {
+     int ret;
+     int32_t raw_mv;
+     struct adc_sequence seq = {
+         .channels = BIT(current_adc.channel_id),
+         .buffer = &adc_buf,
+         .buffer_size = sizeof(adc_buf),
+         .resolution = current_adc.resolution,
+     };
 
-    ret = adc_read_dt(&current_adc, &seq);
-    if (ret != 0) {
-        LOG_WRN("ADC read failed (%d)", ret);
-        return 0.0f;
-    }
+     ret = adc_read_dt(&current_adc, &seq);
+     if (ret != 0) {
+         LOG_WRN("ADC read failed (%d)", ret);
+         return 0.0f;
+     }
 
-    /* Convert raw ADC to mV */
-    raw_mv = adc_raw_to_millivolts_dt(&current_adc, adc_buf);
-    float voltage = raw_mv / 1000.0f;
+     /* Convert raw ADC to mV */
+     raw_mv = adc_raw_to_millivolts_dt(&current_adc, adc_buf);
+     float voltage = raw_mv / 1000.0f;
 
-    /* Convert voltage to current */
-    return voltage / CURRENT_SENSE_GAIN;
-}
+     /* Convert voltage to current */
+     return voltage / CURRENT_SENSE_GAIN;
+ }
+
 
 bool CurrentSense_IsOvercurrent(void)
 {

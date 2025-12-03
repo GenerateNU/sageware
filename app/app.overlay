@@ -24,3 +24,32 @@
         };
     };
 };
+
+/ {
+    aliases {
+        adc3 = &adc3;
+    };
+};
+
+
+/*
+/ {
+    aliases {
+        adc_ch1 = &adc3_in5_pin;
+    };
+
+    /* Parent grouping node for ADC inputs 
+    adc_inputs: adc_inputs {
+        compatible = "adc-io-channels";
+
+        adc3_in5_pin: adc3_in5_pin {
+            io-channels = <&adc3 5>;
+        };
+    };
+};
+/* 
+&adc3 {
+    status = "okay";
+    pinctrl-0 = <&adc3_inp5_pf3>;
+    pinctrl-names = "default";
+};*/

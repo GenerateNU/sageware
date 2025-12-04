@@ -40,7 +40,7 @@ void CurrentSense_Init(int current_sense_channel)
     }
     LOG_INF("ADC device ready: %p, channel: %d, vref: %d mV",
             current_adc.dev, current_sense_channel, current_adc.vref_mv);
-    return current_adc.vref_mv;
+    //return current_adc.vref_mv;
 }
  float CurrentSense_ReadCurrent(void)
  {
@@ -62,8 +62,8 @@ void CurrentSense_Init(int current_sense_channel)
      LOG_INF("ADC raw: %d, max: %u, voltage: %d mV",
              (int)adc_buf, max_value, (int)(voltage * 1000));
      /* Convert voltage to current */
-     return voltage / CURRENT_SENSE_GAIN;
-    // return voltage;
+    // return voltage / CURRENT_SENSE_GAIN;
+     return voltage;
  }
 bool CurrentSense_IsOvercurrent(void)
 {

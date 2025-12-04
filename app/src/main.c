@@ -20,22 +20,32 @@ static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 int main(void)
 {
          k_msleep(5000);
-     CurrentSense_Init(5);
-              k_msleep(5000);
-   while (1) {
-        float current = CurrentSense_ReadCurrent();
-        k_msleep(500);
-        bool overcurrent = CurrentSense_IsOvercurrent();
-        k_msleep(500);
-        int current_mA = (int)(current * 1000.0f);
+         CurrentSense_Init(3);
+         k_msleep(5000);
 
+   //while (1) {
+        // float current = CurrentSense_ReadCurrent();
+        // k_msleep(500);
+        // bool overcurrent = CurrentSense_IsOvercurrent();
+
+         float voltage = CurrentSense_ReadCurrent(); //use "voltage" to feed into sensing pins
+                 k_msleep(500);
+        LOG_INF("voltage: %d mV",
+            (int)(voltage * 1000));
+                    k_msleep(500);
+        bool overcurrent = CurrentSense_IsOvercurrent();
+
+        k_msleep(500);
+       // int current_mA = (int)(current * 1000.0f);
+
+       
 // LOG_INF("Current: %d mA, Overcurrent: %s",
 //        current_mA,
 //        overcurrent ? "YES" : "NO");
 
         k_msleep(500);
     
-   }
+  //  }
     // gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 
     // if (motor_init() != 0) {

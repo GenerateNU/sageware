@@ -4,22 +4,15 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/sys/printk.h>
 
-#include "motor.h"
+#include "motor_mold.h"
 
-// Stepper Motor aliases (from devicetree aliases)
-#define STEP_A   DT_ALIAS(step)
-#define DIR_A    DT_ALIAS(dir)
-#define ENABLE_A DT_ALIAS(enable)   
+// Motor 2 - Molding (from devicetree aliases)
+#define MOTOR2_PUL   DT_ALIAS(motor2_pul)
+#define MOTOR2_DIR   DT_ALIAS(motor2_dir)
 
 // GPIO device tree specifications
-static const struct gpio_dt_spec stepPin   = GPIO_DT_SPEC_GET(STEP_A, gpios);
-static const struct gpio_dt_spec dirPin    = GPIO_DT_SPEC_GET(DIR_A,  gpios);
-static const struct gpio_dt_spec enablePin = GPIO_DT_SPEC_GET(ENABLE_A, gpios);
-
-// *** CHANGE THIS BASED ON YOUR BOARD ***
-// If your motor driver enable pin is nEN (active LOW): set to 1
-// If your motor driver enable pin is EN  (active HIGH): set to 0
-#define NEN_ACTIVE_LOW 1
+static const struct gpio_dt_spec stepPin   = GPIO_DT_SPEC_GET(MOTOR2_PUL, gpios);
+static const struct gpio_dt_spec dirPin    = GPIO_DT_SPEC_GET(MOTOR2_DIR, gpios);
 
 // Thread control variables
 static volatile bool motor_running = false;
@@ -32,32 +25,20 @@ static k_tid_t motor_thread_id = NULL;
 #define MOTOR_STACK_SIZE 1024
 K_THREAD_STACK_DEFINE(motor_stack, MOTOR_STACK_SIZE);
 
-// Helper: control enable pin polarity
-static inline void drv_enable(bool en)
-{
-#if NEN_ACTIVE_LOW
-    gpio_pin_set_dt(&enablePin, en ? 0 : 1);   // nEN low = enable
-#else
-    gpio_pin_set_dt(&enablePin, en ? 1 : 0);   // EN  high = enable
-#endif
-}
-
 int motor_init(void)
 {
     if (!device_is_ready(stepPin.port) ||
-        !device_is_ready(dirPin.port)  ||
-        !device_is_ready(enablePin.port)) {
-        printk("Motor GPIO not ready\n");
+        !device_is_ready(dirPin.port)) {
+        printk("Motor 2 (Molding) GPIO not ready\n");
         return -ENODEV;
     }
 
     int r = 0;
     r |= gpio_pin_configure_dt(&stepPin, GPIO_OUTPUT_INACTIVE);
     r |= gpio_pin_configure_dt(&dirPin,  GPIO_OUTPUT_INACTIVE);
-    r |= gpio_pin_configure_dt(&enablePin, GPIO_OUTPUT_INACTIVE);
     if (r) return r;
 
-    drv_enable(true); // enable outputs
+    printk("Motor 2 (Molding) initialized\n");
     return 0;
 }
 
@@ -162,6 +143,3 @@ void rotateSteps(int steps, bool direction, int delay_us)
         k_usleep(delay_us);
     }
 }
-
-// Simple wrappers
-void motor_enable(bool on) { drv_enable(on); }

@@ -10,7 +10,7 @@
    ADC Configuration
    ------------------------------------------------------------ */
 #define CURRENT_SENSE_ADC_NODE      DT_NODELABEL(adc3)   // ADC3 on PF3
-#define CURRENT_SENSE_CHANNEL       5                   // PF3 = ADC3_INP5
+#define CURRENT_SENSE_CHANNEL       2                // PF3 = ADC3_INP5, PF5 = ADC_INP4, PF7 = ADC_INP3, PF9 = ADC_INP2, PC3_C = ADC_INP1
 #define ADC_RESOLUTION              16                  // 16-bit ADC
 #define ADC_REFERENCE_VOLTAGE       3.3f                // VDDA
 #define CURRENT_SENSE_GAIN          1.5f                // V per Amp
@@ -25,7 +25,7 @@
  * @brief Initialize ADC for current sensing.
  * Sets up ADC channel and prepares the sequence for sampling.
  */
-void CurrentSense_Init(void);
+void CurrentSense_Init(int current_sense_channel);
 
 /**
  * @brief Read the current from the ADC and convert to Amps.

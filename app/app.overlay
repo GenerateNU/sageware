@@ -1,4 +1,9 @@
 / {
+    chosen {
+        /* Display chosen disabled - using custom SPI control */
+        /* zephyr,display = &ili9340; */
+    };
+
     aliases {
         step      = &step_pin;
         dir       = &dir_pin;
@@ -34,6 +39,26 @@
             gpios = <&gpiod 12 GPIO_ACTIVE_HIGH>;
         };
     };
+};
+
+/* Enable SPI1 for LCD */
+&spi1 {
+    status = "okay";
+    pinctrl-0 = <&spi1_sck_pa5 &spi1_miso_pg9 &spi1_mosi_pa7>;
+    pinctrl-names = "default";
+    cs-gpios = <&gpiob 8 GPIO_ACTIVE_LOW>;  /* CS pin */
+
+    /* ILI9340 device - DISABLED (driver incompatible, use custom SPI instead)
+    ili9340: ili9340@0 {
+        compatible = "ilitek,ili9340";
+        reg = <0>;
+        mipi-max-frequency = <25000000>;
+        cmd-data-gpios = <&gpiod 11 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpiod 12 GPIO_ACTIVE_HIGH>;
+        width = <320>;
+        height = <240>;
+    };
+    */
 };
 
 

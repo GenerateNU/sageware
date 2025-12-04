@@ -1,51 +1,29 @@
 /*
- * Custom ILI9340 Display Driver using direct SPI control
- * Bypasses broken Zephyr ILI9340 driver
+ * NOTE: Display driver temporarily disabled due to ILI9340 incompatibility.
+ * Will implement custom SPI-based display control later.
+ * All functions below are commented out.
  */
+
+#if 0  /* Disabled until custom SPI display implementation */
 
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
-#include <zephyr/drivers/spi.h>
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/display.h>
 #include <zephyr/logging/log.h>
 #include <string.h>
 
 #include "screen.h"
 
+/* Use the display chosen by the shield/board */
+#define DISPLAY_NODE DT_CHOSEN(zephyr_display)
+
 LOG_MODULE_REGISTER(screen, LOG_LEVEL_INF);
 
-/* ILI9340 Commands */
-#define ILI9340_NOP        0x00
-#define ILI9340_SWRESET    0x01
-#define ILI9340_SLPOUT     0x11
-#define ILI9340_DISPOFF    0x28
-#define ILI9340_DISPON     0x29
-#define ILI9340_CASET      0x2A
-#define ILI9340_PASET      0x2B
-#define ILI9340_RAMWR      0x2C
-#define ILI9340_MADCTL     0x36
-#define ILI9340_PIXFMT     0x3A
+static const struct device *display_dev;
+static struct display_capabilities caps;
 
-/* Display dimensions */
-#define SCREEN_WIDTH  320
-#define SCREEN_HEIGHT 240
-
-/* SPI device from devicetree */
-#define SPI1_NODE DT_NODELABEL(spi1)
-static const struct device *spi_dev;
-
-static struct spi_config spi_cfg = {
-    .frequency = 25000000,  /* 25 MHz */
-    .operation = SPI_OP_MODE_MASTER | SPI_TRANSFER_MSB | SPI_WORD_SET(8),
-    .slave = 0,
-};
-
-/* GPIO pins for DC (Data/Command) and RST (Reset) */
-static struct gpio_dt_spec dc_pin = GPIO_DT_SPEC_GET(DT_ALIAS(lcd_dc), gpios);
-static struct gpio_dt_spec rst_pin = GPIO_DT_SPEC_GET(DT_ALIAS(lcd_rst), gpios);
-
-/* Line buffer for efficient drawing */
+/* Max line width we’ll support (320px, matches Adafruit 2.8" TFT) */
 #define SCREEN_MAX_WIDTH 320
 static uint16_t line_buf[SCREEN_MAX_WIDTH];
 

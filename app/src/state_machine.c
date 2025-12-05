@@ -41,15 +41,6 @@ void change_state(MyState new_state) {
     current_state = next_state;
 }
 
-/* State transition variables
-- heater hot enough
-- start button pressed
-- [activate on timer signal, nothing needed]
-- beam breaker signal
-- [deactivate also on timer signal]
-- [cutter also on timer signal]
-*/
-
 // check for overheating
 void st_overheat() {
     // enter ESTOP state
@@ -68,8 +59,6 @@ void st_heater_on_run(int temp) {
         current_state = ST_WAIT_START_BUTTON
     }
 } 
-
-
 
 // ST_WAIT_START_BUTTON
 void st_wait_start_run(int start_button) {
@@ -97,7 +86,7 @@ void st_start_laminate_mold_dispense_run(int beam_breaker) {
 void st_beam_breaker_timer_run(void) {
     while(!st_overheat()) {
         // run motors for x seconds
-        current_state = ST_CUTTER
+        current_state = ST_CUTTER;
     }
 }
 
@@ -107,15 +96,21 @@ void st_cutter_run() {
     while(!st_overheat()) {}
 }
 
-
 // State Machine
-
 void state_machine_thread(void) {
     while (1) {
         // put while loop in every case and check estop
         switch (current_state) {
             case ST_HEATER_ON:
                 st_heater_on_run(temp);
+            case ST_WAIT_START_BUTTON:
+                st_wait_start_run(start_button);
+            case ST_START_LAMINATE_MOLD_DISPENSE:
+                st_start_laminate_mold_dispense_run(beam_breaker);
+            case ST_BEAM_BREAKER_TIMER:
+                st_beam_breaker_timer_run();
+            case ST_CUTTER:
+                st_cutter_run();
         }
     }
 }

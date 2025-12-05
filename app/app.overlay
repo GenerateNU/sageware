@@ -19,6 +19,11 @@
         /* LCD Control */
         lcd-dc    = &lcd_dc_pin;
         lcd-rst   = &lcd_rst_pin;
+
+        /* State Machine Peripherals */
+        heater       = &heater_pin;
+        start-button = &start_button_pin;
+        beam-breaker = &beam_breaker_pin;
     };
 
     lcd_control: lcd_control {
@@ -30,6 +35,22 @@
 
         lcd_rst_pin: lcd_rst {
             gpios = <&gpiod 12 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+    state_machine_gpio: state_machine_gpio {
+        compatible = "gpio-leds";
+
+        heater_pin: heater {
+            gpios = <&gpioe 6 GPIO_ACTIVE_HIGH>;
+        };
+
+        start_button_pin: start_button {
+            gpios = <&gpioc 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>; /* User Button */
+        };
+
+        beam_breaker_pin: beam_breaker {
+            gpios = <&gpioe 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         };
     };
 

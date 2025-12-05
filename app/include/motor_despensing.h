@@ -1,5 +1,5 @@
-#ifndef MOTOR_H_
-#define MOTOR_H_
+#ifndef MOTOR_DESPENSING_H_
+#define MOTOR_DESPENSING_H_
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>

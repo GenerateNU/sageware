@@ -1,20 +1,20 @@
 / {
     aliases {
         /* Motor 1 - Laminating */
-        motor1_pul    = &motor1_pul_pin;
-        motor1_dir    = &motor1_dir_pin;
+        motor1pul    = &motor1_pul_pin;
+        motor1dir    = &motor1_dir_pin;
 
         /* Motor 2 - Molding */
-        motor2_pul    = &motor2_pul_pin;
-        motor2_dir    = &motor2_dir_pin;
+        motor2pul    = &motor2_pul_pin;
+        motor2dir    = &motor2_dir_pin;
 
         /* Motor 3 - Cutting */
-        motor3_pul    = &motor3_pul_pin;
-        motor3_dir    = &motor3_dir_pin;
+        motor3pul    = &motor3_pul_pin;
+        motor3dir    = &motor3_dir_pin;
 
         /* Motor 4 - Dispensing */
-        motor4_pul    = &motor4_pul_pin;
-        motor4_dir    = &motor4_dir_pin;
+        motor4pul    = &motor4_pul_pin;
+        motor4dir    = &motor4_dir_pin;
 
         /* LCD Control */
         lcd-dc    = &lcd_dc_pin;
@@ -84,6 +84,15 @@
             gpios = <&gpiod 9 GPIO_ACTIVE_HIGH>;   /* PD9 */
         };
     };
+
+    some_control: some_control {
+        compatible = "gpio-leds";
+    
+        some_control_pin: some_control_pin {
+            gpios = <&gpioe 5 GPIO_ACTIVE_HIGH>;
+        };
+    };
+    
 };
 
 

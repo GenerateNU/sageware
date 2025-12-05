@@ -15,10 +15,10 @@
 #define COUNTER_CLOCKWISE   false
 
 /* Simple motor API */
-int  motor_init(void);                                    // config pins, wake/enable driver
-void motor_enable(bool en);                               // enable/disable outputs
-void motor_run(bool on, bool direction, int delay_us);    // Turn motor on/off, set direction and speed
-void rotateSteps(int steps, bool direction, int delay_us);// Blocking rotate for specific steps
-bool motor_is_running(void);                              // Check if motor is currently running
+int  cutting_motor_init(void);                                    // config pins, wake/enable driver
+void cutting_motor_enable(bool en);                               // enable/disable outputs
+void cutting_motor_run(bool on, bool direction, int delay_us);    // Turn motor on/off, set direction and speed
+void cutting_rotateSteps(int steps, bool direction, int delay_us);// Blocking rotate for specific steps
+bool cutting_motor_is_running(void);                              // Check if motor is currently running
 
 #endif

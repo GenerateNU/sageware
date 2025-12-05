@@ -8,7 +8,10 @@ project(app)
 # this didn't work when this was called app. It must be called app because... TO-DO...
 target_sources(app PRIVATE
   src/main.c
-  src/motor.c
+  src/motor_cutting.c
+  src/motor_despensing.c
+  src/motor_laminate.c
+  src/motor_mold.c
   src/screen.c
 )
 

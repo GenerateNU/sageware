@@ -10,6 +10,7 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);   // register your module
 #include "motor.h"
 #include "screen.h"
 #include "adc.h"
+#include "sensor.h"
 // #include "heating_motor.h"   // Will have different gear ratio
 // #include "molding_motor.h"   // Will have different gear ratio  
 // #include "cutting_motor.h"   // Will have different gear ratio
@@ -17,35 +18,64 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);   // register your module
 #define LED0_NODE DT_ALIAS(led0)
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
+ //static const struct gpio_dt_spec photo_spec_a =
+  //  GPIO_DT_SPEC_GET(DT_NODELABEL(photo_sensor_a), gpios);
+
+//static const struct gpio_dt_spec photo_spec_b =
+   // GPIO_DT_SPEC_GET(DT_NODELABEL(photo_sensor_b), gpios);
+
+
+
 int main(void)
+
 {
-         k_msleep(5000);
-         CurrentSense_Init(3);
-         k_msleep(5000);
+        //  k_msleep(5000);
+        //  CurrentSense_Init(3);
+        //  k_msleep(5000);
 
    //while (1) {
         // float current = CurrentSense_ReadCurrent();
         // k_msleep(500);
         // bool overcurrent = CurrentSense_IsOvercurrent();
 
-         float voltage = CurrentSense_ReadCurrent(); //use "voltage" to feed into sensing pins
-                 k_msleep(500);
-        LOG_INF("voltage: %d mV",
-            (int)(voltage * 1000));
-                    k_msleep(500);
-        bool overcurrent = CurrentSense_IsOvercurrent();
-
-        k_msleep(500);
+        // float voltage = CurrentSense_ReadCurrent(); //use variable to feed into sensing pins; voltage is in mV
+        // k_msleep(500);
+        // LOG_INF("voltage: %d mV", (int)(voltage * 1000));
+        // k_msleep(500);
+        // bool overcurrent = CurrentSense_IsOvercurrent();
        // int current_mA = (int)(current * 1000.0f);
-
-       
 // LOG_INF("Current: %d mA, Overcurrent: %s",
 //        current_mA,
 //        overcurrent ? "YES" : "NO");
 
-        k_msleep(500);
+       // k_msleep(500);
     
   //  }
+
+  // sensor.c code
+// photo_sensor_config_t cfg = {
+//         .specs = { &photo_spec_a, &photo_spec_b },
+//         .debounce_ms = 20, // 20 ms debounce
+//     };
+
+//     photo_sensor_init(cfg);
+
+//     while (1) {
+//         bool sensor = photo_sensor_read_debounced();
+//         //state_machine_update(sensor); // feed your state machine
+//         k_msleep(1); // call every 1 ms for debouncing
+//     }
+photo_sensor_init(20);
+
+    while (1) {
+        // Call tick every 1 ms
+        photo_sensor_tick_1ms();
+
+        bool sensor = photo_sensor_read_debounced();
+
+       // state_machine_update(sensor);
+
+        k_msleep(1); 
     // gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 
     // if (motor_init() != 0) {
@@ -102,5 +132,5 @@ int main(void)
     //     // 8. Do cutting with current sensing
     //     // 9. Restart motors and repeat until bead count reached
 
-    // }
+     }
 }

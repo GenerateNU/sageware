@@ -8,9 +8,6 @@
         gpios = <&gpioe 5 GPIO_ACTIVE_HIGH>;
     };
 
-    photo_sensor_b: photo_sensor_b {
-        gpios = <&gpioe 6 GPIO_ACTIVE_HIGH>;
-    };
     /* Parent grouping node for the stepper control signals */
     stepper_motor: stepper_motor {
         compatible = "gpio-leds";

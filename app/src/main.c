@@ -30,25 +30,25 @@ int main(void)
 
 {
         //  k_msleep(5000);
-        //  CurrentSense_Init(3);
+        //  CurrentSense_Init(1);
         //  k_msleep(5000);
 
    //while (1) {
-        // float current = CurrentSense_ReadCurrent();
-        // k_msleep(500);
-        // bool overcurrent = CurrentSense_IsOvercurrent();
+//         float current = CurrentSense_ReadCurrent();
+//         k_msleep(500);
+//         bool overcurrent = CurrentSense_IsOvercurrent();
 
-        // float voltage = CurrentSense_ReadCurrent(); //use variable to feed into sensing pins; voltage is in mV
-        // k_msleep(500);
-        // LOG_INF("voltage: %d mV", (int)(voltage * 1000));
-        // k_msleep(500);
-        // bool overcurrent = CurrentSense_IsOvercurrent();
-       // int current_mA = (int)(current * 1000.0f);
+//         float voltage = CurrentSense_ReadCurrent(); //use variable to feed into sensing pins; voltage is in mV
+//         k_msleep(500);
+//         LOG_INF("voltage: %d mV", (int)(voltage * 1000));
+//         k_msleep(500);
+//       //  bool overcurrent = CurrentSense_IsOvercurrent();
+//        int current_mA = (int)(current * 1000.0f);
 // LOG_INF("Current: %d mA, Overcurrent: %s",
 //        current_mA,
 //        overcurrent ? "YES" : "NO");
 
-       // k_msleep(500);
+     //   k_msleep(500);
     
   //  }
 
@@ -65,17 +65,20 @@ int main(void)
 //         //state_machine_update(sensor); // feed your state machine
 //         k_msleep(1); // call every 1 ms for debouncing
 //     }
-photo_sensor_init(20);
+  photo_sensor_init(20); // 20 ms debounce
 
     while (1) {
-        // Call tick every 1 ms
         photo_sensor_tick_1ms();
+        bool triggered = photo_sensor_read_debounced();
 
-        bool sensor = photo_sensor_read_debounced();
+        if (triggered) {
+            printk("Sensor triggered -> start motor\n");
+        } else {
+            printk("Sensor idle -> stop motor\n");
+        }
 
-       // state_machine_update(sensor);
-
-        k_msleep(1); 
+        k_msleep(1);
+   }
     // gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 
     // if (motor_init() != 0) {
@@ -132,5 +135,5 @@ photo_sensor_init(20);
     //     // 8. Do cutting with current sensing
     //     // 9. Restart motors and repeat until bead count reached
 
-     }
+    // }
 }

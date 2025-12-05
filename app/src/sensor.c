@@ -3,26 +3,18 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 
-#define SENSOR_PIN_COUNT 2
+#define SENSOR_PIN 5   // PE5
 
-// GPIOE pins
-static const uint32_t sensor_pins[SENSOR_PIN_COUNT] = {5, 6};
 static const struct device *gpioe_dev;
-
 static uint16_t debounce_ms;
 static bool initialized = false;
 static bool stable_state = false;
 static bool last_raw_state = false;
 static uint16_t debounce_counter = 0;
 
-// Helper: read both pins ORed
-static bool read_pins(void)
+static bool read_pin(void)
 {
-    bool state = false;
-    for (int i = 0; i < SENSOR_PIN_COUNT; i++) {
-        state |= gpio_pin_get(gpioe_dev, sensor_pins[i]);
-    }
-    return state;
+    return gpio_pin_get(gpioe_dev, SENSOR_PIN);
 }
 
 void photo_sensor_init(uint16_t db_ms)
@@ -31,15 +23,18 @@ void photo_sensor_init(uint16_t db_ms)
     if (!gpioe_dev) {
         printk("ERROR: GPIOE device not found\n");
         return;
-    }
+    } else {
+    printk("GPIOE device found!\n");
+    return;
+}
 
     debounce_ms = db_ms;
 
-    for (int i = 0; i < SENSOR_PIN_COUNT; i++) {
-        gpio_pin_configure(gpioe_dev, sensor_pins[i], GPIO_INPUT);
-    }
+    gpio_pin_configure(gpioe_dev, SENSOR_PIN, GPIO_INPUT | GPIO_PULL_UP);
+    bool val = gpio_pin_get(gpioe_dev, SENSOR_PIN);
+printk("PE5 state: %d\n", val);
 
-    last_raw_state = read_pins();
+    last_raw_state = read_pin();
     stable_state = last_raw_state;
 
     initialized = true;
@@ -48,7 +43,7 @@ void photo_sensor_init(uint16_t db_ms)
 bool photo_sensor_read(void)
 {
     if (!initialized) return false;
-    return read_pins();
+    return read_pin();
 }
 
 bool photo_sensor_read_debounced(void)
@@ -60,7 +55,7 @@ void photo_sensor_tick_1ms(void)
 {
     if (!initialized) return;
 
-    bool raw = read_pins();
+    bool raw = read_pin();
 
     if (raw != last_raw_state) {
         last_raw_state = raw;
